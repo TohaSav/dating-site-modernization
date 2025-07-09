@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 import { toast } from "@/hooks/use-toast";
-import { AppState, ViewType, Message } from "@/types";
+import {
+  AppState,
+  ViewType,
+  Message,
+  UserProfile,
+  RegistrationData,
+} from "@/types";
 import { ADMIN_CREDENTIALS } from "@/data/constants";
 import { MOCK_PROFILES } from "@/data/mockData";
 
@@ -20,10 +26,20 @@ export const useDatingApp = () => {
   const [adminLogin, setAdminLogin] = useState("");
   const [adminPassword, setAdminPassword] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(() => {
+    const saved = localStorage.getItem("userProfile");
+    return saved ? JSON.parse(saved) : null;
+  });
 
   useEffect(() => {
     localStorage.setItem("isLoggedIn", JSON.stringify(isLoggedIn));
   }, [isLoggedIn]);
+
+  useEffect(() => {
+    if (userProfile) {
+      localStorage.setItem("userProfile", JSON.stringify(userProfile));
+    }
+  }, [userProfile]);
 
   const handleLike = (profileId: number) => {
     if (!likes.includes(profileId)) {
@@ -96,10 +112,32 @@ export const useDatingApp = () => {
     setCurrentView("home");
   };
 
-  const handleRegister = () => {
+  const handleRegister = (data: RegistrationData) => {
+    const newUserProfile: UserProfile = {
+      id: Date.now(),
+      name: data.firstName,
+      firstName: data.firstName,
+      age: data.age,
+      location: data.city,
+      bio: `Привет! Меня зовут ${data.firstName}. Рад(а) познакомиться!`,
+      image: `/api/placeholder/400/400`,
+      interests: [],
+      verified: false,
+      premium: false,
+      online: true,
+      email: data.email,
+      gender: data.gender,
+    };
+
+    setUserProfile(newUserProfile);
     setIsLoggedIn(true);
     localStorage.setItem("isLoggedIn", "true");
-    setCurrentView("home");
+    setCurrentView("profile");
+
+    toast({
+      title: "Добро пожаловать!",
+      description: "Регистрация прошла успешно. Заполните свой профиль.",
+    });
   };
 
   const toggleInterest = (interest: string) => {
@@ -132,6 +170,7 @@ export const useDatingApp = () => {
     adminLogin,
     adminPassword,
     isAdmin,
+    userProfile,
 
     // Actions
     setCurrentView,
@@ -141,6 +180,7 @@ export const useDatingApp = () => {
     setAdminLogin,
     setAdminPassword,
     setIsAdmin,
+    setUserProfile,
     handleLike,
     handleSendMessage,
     handleAdminLogin,

@@ -43,6 +43,7 @@ const Index = () => {
     getProfile,
     getChatMessages,
     profiles,
+    userProfile,
   } = useDatingApp();
 
   // Рендер в зависимости от текущего вида
@@ -101,6 +102,7 @@ const Index = () => {
           selectedInterests={selectedInterests}
           toggleInterest={toggleInterest}
           setCurrentView={setCurrentView}
+          userProfile={userProfile}
         />
       );
     case "admin":

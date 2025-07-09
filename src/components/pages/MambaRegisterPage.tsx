@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -19,17 +20,45 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import Icon from "@/components/ui/icon";
-import { ViewType } from "@/types";
+import { ViewType, RegistrationData } from "@/types";
 
 interface MambaRegisterPageProps {
   setCurrentView: (view: ViewType) => void;
-  handleRegister: () => void;
+  handleRegister: (data: RegistrationData) => void;
 }
 
 export const MambaRegisterPage = ({
   setCurrentView,
   handleRegister,
 }: MambaRegisterPageProps) => {
+  const [formData, setFormData] = useState<RegistrationData>({
+    firstName: "",
+    age: 18,
+    city: "",
+    email: "",
+    password: "",
+    gender: "male",
+    agreeToTerms: false,
+    agreeToNewsletter: false,
+  });
+
+  const handleSubmit = () => {
+    if (
+      !formData.firstName ||
+      !formData.city ||
+      !formData.email ||
+      !formData.password
+    ) {
+      alert("Пожалуйста, заполните все обязательные поля");
+      return;
+    }
+    if (!formData.agreeToTerms) {
+      alert("Необходимо согласиться с условиями использования");
+      return;
+    }
+    handleRegister(formData);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-white flex items-center justify-center p-4">
       <div className="w-full max-w-lg">
@@ -61,7 +90,16 @@ export const MambaRegisterPage = ({
             <div className="space-y-4">
               <div>
                 <Label className="text-gray-700 font-medium">Пол</Label>
-                <RadioGroup className="flex space-x-6 mt-2">
+                <RadioGroup
+                  className="flex space-x-6 mt-2"
+                  value={formData.gender}
+                  onValueChange={(value) =>
+                    setFormData({
+                      ...formData,
+                      gender: value as "male" | "female",
+                    })
+                  }
+                >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="male" id="male" />
                     <Label htmlFor="male" className="text-gray-700">
@@ -88,6 +126,10 @@ export const MambaRegisterPage = ({
                   <Input
                     id="firstName"
                     placeholder="Анна"
+                    value={formData.firstName}
+                    onChange={(e) =>
+                      setFormData({ ...formData, firstName: e.target.value })
+                    }
                     className="mt-2 border-gray-300 focus:border-mamba-primary focus:ring-mamba-primary"
                   />
                 </div>
@@ -95,7 +137,12 @@ export const MambaRegisterPage = ({
                   <Label htmlFor="age" className="text-gray-700 font-medium">
                     Возраст
                   </Label>
-                  <Select>
+                  <Select
+                    value={formData.age.toString()}
+                    onValueChange={(value) =>
+                      setFormData({ ...formData, age: parseInt(value) })
+                    }
+                  >
                     <SelectTrigger className="mt-2 border-gray-300 focus:border-mamba-primary focus:ring-mamba-primary">
                       <SelectValue placeholder="Выберите" />
                     </SelectTrigger>
@@ -116,19 +163,28 @@ export const MambaRegisterPage = ({
                 <Label htmlFor="city" className="text-gray-700 font-medium">
                   Город
                 </Label>
-                <Select>
+                <Select
+                  value={formData.city}
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, city: value })
+                  }
+                >
                   <SelectTrigger className="mt-2 border-gray-300 focus:border-mamba-primary focus:ring-mamba-primary">
                     <SelectValue placeholder="Выберите город" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="moscow">Москва</SelectItem>
-                    <SelectItem value="spb">Санкт-Петербург</SelectItem>
-                    <SelectItem value="ekaterinburg">Екатеринбург</SelectItem>
-                    <SelectItem value="novosibirsk">Новосибирск</SelectItem>
-                    <SelectItem value="kazan">Казань</SelectItem>
-                    <SelectItem value="rostov">Ростов-на-Дону</SelectItem>
-                    <SelectItem value="ufa">Уфа</SelectItem>
-                    <SelectItem value="krasnodar">Краснодар</SelectItem>
+                    <SelectItem value="Москва">Москва</SelectItem>
+                    <SelectItem value="Санкт-Петербург">
+                      Санкт-Петербург
+                    </SelectItem>
+                    <SelectItem value="Екатеринбург">Екатеринбург</SelectItem>
+                    <SelectItem value="Новосибирск">Новосибирск</SelectItem>
+                    <SelectItem value="Казань">Казань</SelectItem>
+                    <SelectItem value="Ростов-на-Дону">
+                      Ростов-на-Дону
+                    </SelectItem>
+                    <SelectItem value="Уфа">Уфа</SelectItem>
+                    <SelectItem value="Краснодар">Краснодар</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -141,6 +197,10 @@ export const MambaRegisterPage = ({
                   id="email"
                   type="email"
                   placeholder="example@email.com"
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
                   className="mt-2 border-gray-300 focus:border-mamba-primary focus:ring-mamba-primary"
                 />
               </div>
@@ -153,6 +213,10 @@ export const MambaRegisterPage = ({
                   id="password"
                   type="password"
                   placeholder="••••••••"
+                  value={formData.password}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
                   className="mt-2 border-gray-300 focus:border-mamba-primary focus:ring-mamba-primary"
                 />
                 <p className="text-xs text-gray-500 mt-1">
@@ -162,7 +226,17 @@ export const MambaRegisterPage = ({
 
               <div className="space-y-3">
                 <div className="flex items-start space-x-2">
-                  <Checkbox id="terms" className="mt-1" />
+                  <Checkbox
+                    id="terms"
+                    className="mt-1"
+                    checked={formData.agreeToTerms}
+                    onCheckedChange={(checked) =>
+                      setFormData({
+                        ...formData,
+                        agreeToTerms: checked as boolean,
+                      })
+                    }
+                  />
                   <Label
                     htmlFor="terms"
                     className="text-sm text-gray-600 leading-relaxed"
@@ -185,7 +259,17 @@ export const MambaRegisterPage = ({
                 </div>
 
                 <div className="flex items-start space-x-2">
-                  <Checkbox id="newsletter" className="mt-1" />
+                  <Checkbox
+                    id="newsletter"
+                    className="mt-1"
+                    checked={formData.agreeToNewsletter}
+                    onCheckedChange={(checked) =>
+                      setFormData({
+                        ...formData,
+                        agreeToNewsletter: checked as boolean,
+                      })
+                    }
+                  />
                   <Label htmlFor="newsletter" className="text-sm text-gray-600">
                     Получать новости и специальные предложения
                   </Label>
@@ -195,7 +279,7 @@ export const MambaRegisterPage = ({
 
             <Button
               className="w-full bg-gradient-to-r from-mamba-primary to-mamba-secondary hover:from-purple-600 hover:to-pink-600 text-white py-3 text-lg font-semibold"
-              onClick={handleRegister}
+              onClick={handleSubmit}
             >
               Создать аккаунт
             </Button>

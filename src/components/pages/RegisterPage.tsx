@@ -1,9 +1,9 @@
 import { MambaRegisterPage } from "./MambaRegisterPage";
-import { ViewType } from "@/types";
+import { ViewType, RegistrationData } from "@/types";
 
 interface RegisterPageProps {
   setCurrentView: (view: ViewType) => void;
-  handleRegister: () => void;
+  handleRegister: (data: RegistrationData) => void;
 }
 
 export const RegisterPage = ({

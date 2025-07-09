@@ -7,19 +7,21 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import Icon from "@/components/ui/icon";
-import { ViewType } from "@/types";
+import { ViewType, UserProfile } from "@/types";
 import { INTERESTS } from "@/data/constants";
 
 interface ProfilePageProps {
   selectedInterests: string[];
   toggleInterest: (interest: string) => void;
   setCurrentView: (view: ViewType) => void;
+  userProfile: UserProfile | null;
 }
 
 export const ProfilePage = ({
   selectedInterests,
   toggleInterest,
   setCurrentView,
+  userProfile,
 }: ProfilePageProps) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 to-blue-50 py-8">
@@ -34,20 +36,35 @@ export const ProfilePage = ({
           <CardContent className="space-y-6">
             <div className="text-center">
               <Avatar className="w-32 h-32 mx-auto mb-4">
-                <AvatarImage src="/img/232ac293-fdff-4f40-9c0b-87d0eeb45092.jpg" />
-                <AvatarFallback>Я</AvatarFallback>
+                <AvatarImage
+                  src={
+                    userProfile?.image ||
+                    "/img/232ac293-fdff-4f40-9c0b-87d0eeb45092.jpg"
+                  }
+                />
+                <AvatarFallback>
+                  {userProfile?.firstName?.[0] || "Я"}
+                </AvatarFallback>
               </Avatar>
-              <h2 className="text-2xl font-bold">Ваше Имя, 25</h2>
-              <p className="text-gray-500">Москва</p>
+              <h2 className="text-2xl font-bold">
+                {userProfile?.firstName || "Ваше Имя"}, {userProfile?.age || 25}
+              </h2>
+              <p className="text-gray-500">
+                {userProfile?.location || "Город"}
+              </p>
               <div className="flex justify-center items-center space-x-2 mt-2">
-                <Badge className="bg-blue-500">
-                  <Icon name="CheckCircle" size={16} className="mr-1" />
-                  Верифицирован
-                </Badge>
-                <Badge className="bg-gradient-to-r from-pink-500 to-blue-500">
-                  <Icon name="Crown" size={16} className="mr-1" />
-                  Premium
-                </Badge>
+                {userProfile?.verified && (
+                  <Badge className="bg-blue-500">
+                    <Icon name="CheckCircle" size={16} className="mr-1" />
+                    Верифицирован
+                  </Badge>
+                )}
+                {userProfile?.premium && (
+                  <Badge className="bg-gradient-to-r from-pink-500 to-blue-500">
+                    <Icon name="Crown" size={16} className="mr-1" />
+                    Premium
+                  </Badge>
+                )}
               </div>
             </div>
 
@@ -63,6 +80,7 @@ export const ProfilePage = ({
                   <Label>О себе</Label>
                   <Textarea
                     placeholder="Расскажите о себе..."
+                    defaultValue={userProfile?.bio || ""}
                     className="mt-2"
                   />
                 </div>

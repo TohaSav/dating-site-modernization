@@ -11,6 +11,23 @@ export interface Profile {
   online: boolean;
 }
 
+export interface UserProfile extends Profile {
+  email: string;
+  gender: "male" | "female";
+  firstName: string;
+}
+
+export interface RegistrationData {
+  firstName: string;
+  age: number;
+  city: string;
+  email: string;
+  password: string;
+  gender: "male" | "female";
+  agreeToTerms: boolean;
+  agreeToNewsletter: boolean;
+}
+
 export interface Message {
   id: number;
   chatId: number;
@@ -43,6 +60,7 @@ export interface AppState {
   adminLogin: string;
   adminPassword: string;
   isAdmin: boolean;
+  userProfile: UserProfile | null;
 }
 
 export interface AdminStats {

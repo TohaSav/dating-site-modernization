@@ -27,7 +27,8 @@ export type ViewType =
   | "matches"
   | "chat"
   | "profile"
-  | "admin";
+  | "admin"
+  | "adminka";
 
 export interface AppState {
   currentView: ViewType;

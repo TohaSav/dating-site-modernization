@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "@/hooks/use-toast";
 import { AppState, ViewType, Message } from "@/types";
 import { ADMIN_CREDENTIALS } from "@/data/constants";
@@ -6,7 +6,10 @@ import { MOCK_PROFILES } from "@/data/mockData";
 
 export const useDatingApp = () => {
   const [currentView, setCurrentView] = useState<ViewType>("home");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    const saved = localStorage.getItem("isLoggedIn");
+    return saved ? JSON.parse(saved) : false;
+  });
   const [likes, setLikes] = useState<number[]>([]);
   const [matches, setMatches] = useState<number[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -17,6 +20,10 @@ export const useDatingApp = () => {
   const [adminLogin, setAdminLogin] = useState("");
   const [adminPassword, setAdminPassword] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem("isLoggedIn", JSON.stringify(isLoggedIn));
+  }, [isLoggedIn]);
 
   const handleLike = (profileId: number) => {
     if (!likes.includes(profileId)) {
@@ -85,11 +92,13 @@ export const useDatingApp = () => {
 
   const handleLogin = () => {
     setIsLoggedIn(true);
+    localStorage.setItem("isLoggedIn", "true");
     setCurrentView("home");
   };
 
   const handleRegister = () => {
     setIsLoggedIn(true);
+    localStorage.setItem("isLoggedIn", "true");
     setCurrentView("home");
   };
 
